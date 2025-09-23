@@ -1,0 +1,102 @@
+@startuml
+!define TABLE(x) entity x
+hide circle
+
+TABLE(User) {
+  *UserID : int <<PK>>
+  --
+  Username : varchar
+  Password : varchar
+  Role : varchar
+}
+
+TABLE(Borrower) {
+  *BorrowerID : int <<PK>>
+  --
+  Name : varchar
+  Address : varchar
+  Phone : varchar
+}
+
+TABLE(Lender) {
+  *LenderID : int <<PK>>
+  --
+  Name : varchar
+  Address : varchar
+  Phone : varchar
+}
+
+TABLE(Intermediary) {
+  *IntermediaryID : int <<PK>>
+  --
+  Name : varchar
+  Address : varchar
+  Phone : varchar
+}
+
+TABLE(Loan) {
+  *LoanID : int <<PK>>
+  --
+  Amount : decimal
+  StartDate : date
+  EndDate : date
+  StatusID : int <<FK>>
+}
+
+TABLE(Payment) {
+  *PaymentID : int <<PK>>
+  --
+  LoanID : int <<FK>>
+  PaymentDate : date
+  Amount : decimal
+  PaymentMethod : varchar
+  Status : varchar
+}
+
+TABLE(Collateral) {
+  *CollateralID : int <<PK>>
+  --
+  LoanID : int <<FK>>
+  Description : varchar
+  Value : decimal
+}
+
+TABLE(InterestRate) {
+  *InterestRateID : int <<PK>>
+  --
+  LoanID : int <<FK>>
+  Rate : decimal
+  EffectiveDate : date
+}
+
+TABLE(LoanStatus) {
+  *StatusID : int <<PK>>
+  --
+  StatusName : varchar
+}
+
+TABLE(CommunicationLog) {
+  *CommID : int <<PK>>
+  --
+  SenderID : int <<FK>>
+  ReceiverID : int <<FK>>
+  Message : varchar
+  DateTime : datetime
+}
+
+User ||--o{ Borrower : has
+User ||--o{ Lender : has
+User ||--o{ Intermediary : has
+
+Borrower ||--o{ Loan : takes
+Lender ||--o{ Loan : provides
+Intermediary ||--o{ Loan : mediates
+
+Loan ||--o{ Payment : receives
+Loan ||--o{ Collateral : secured_by
+Loan ||--o{ InterestRate : has
+Loan }|..|| LoanStatus : has
+
+User ||--o{ CommunicationLog : sends
+User ||--o{ CommunicationLog : receives
+@enduml
